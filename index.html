@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HW 9C - One Prop Z Test (Two Sides)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink-red: #d42020;
+      --ink-blue: #1a3fc7;
+      --ink-green: #1b8c1b;
+      --ink-purple: #8b2dbd;
+      --paper-bg: #fefef6;
+      --paper-line: #c8d8f0;
+      --paper-margin: #f0a0a0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #e8e4df;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .page {
+      max-width: 850px;
+      margin: 0 auto 30px;
+      background: var(--paper-bg);
+      padding: 40px 50px 50px 80px;
+      border-radius: 2px;
+      box-shadow: 2px 3px 12px rgba(0,0,0,0.15);
+      position: relative;
+      background-image:
+        repeating-linear-gradient(
+          transparent,
+          transparent 31px,
+          var(--paper-line) 31px,
+          var(--paper-line) 32px
+        );
+      background-position: 0 35px;
+    }
+
+    .page::before {
+      content: '';
+      position: absolute;
+      left: 65px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--paper-margin);
+    }
+
+    .header {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      line-height: 32px;
+    }
+
+    .header-line {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .problem {
+      margin-top: 16px;
+      margin-bottom: 10px;
+    }
+
+    .problem-text {
+      font-size: 14px;
+      line-height: 32px;
+      color: #222;
+    }
+
+    .problem-text strong {
+      font-weight: 600;
+    }
+
+    .solution {
+      margin-top: 6px;
+      padding: 4px 0;
+    }
+
+    .hw, .hw p, .hw span, .hw div {
+      font-family: 'Caveat', cursive;
+      color: var(--ink-red);
+    }
+
+    .hw {
+      font-size: 22px;
+      line-height: 34px;
+    }
+
+    .step {
+      margin: 8px 0 6px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      height: 28px;
+      border: 2.5px solid var(--ink-red);
+      border-radius: 50%;
+      font-family: 'Caveat', cursive;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink-red);
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .step-label {
+      font-family: 'Caveat', cursive;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink-green);
+      margin-right: 6px;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .hypothesis-block {
+      margin: 4px 0 4px 10px;
+    }
+
+    .hypothesis-block .line {
+      display: block;
+    }
+
+    .conditions {
+      margin: 4px 0 4px 10px;
+    }
+
+    .condition-item {
+      margin: 4px 0;
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+    }
+
+    .condition-label {
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .check {
+      color: var(--ink-green);
+      font-size: 26px;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+
+    .calc-block {
+      margin: 4px 0 4px 10px;
+    }
+
+    .calc-block .line {
+      display: block;
+    }
+
+    .normal-curve {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0;
+    }
+
+    .normal-curve svg {
+      width: 220px;
+      height: 120px;
+    }
+
+    .conclusion-block {
+      margin: 4px 0 4px 10px;
+    }
+
+    .blue-note {
+      font-family: 'Caveat', cursive;
+      color: var(--ink-blue);
+      font-size: 20px;
+    }
+
+    .purple-note {
+      font-family: 'Caveat', cursive;
+      color: var(--ink-purple);
+      font-size: 19px;
+      font-style: italic;
+    }
+
+    .fraction {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      margin: 0 3px;
+      position: relative;
+      top: -2px;
+    }
+
+    .fraction .num {
+      border-bottom: 2px solid var(--ink-red);
+      padding: 0 4px;
+      line-height: 1.1;
+      font-size: 19px;
+    }
+
+    .fraction .den {
+      padding: 0 4px;
+      line-height: 1.2;
+      font-size: 19px;
+    }
+
+    .sqrt {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
+      margin: 0 2px;
+    }
+
+    .sqrt::before {
+      content: '\221A';
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .sqrt .radicand {
+      border-top: 2px solid var(--ink-red);
+      padding: 0 4px 0 2px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .overline {
+      text-decoration: overline;
+      text-decoration-color: var(--ink-red);
+    }
+
+    .sub {
+      font-size: 16px;
+      vertical-align: sub;
+    }
+
+    .underline {
+      text-decoration: underline;
+      text-decoration-color: var(--ink-red);
+    }
+
+    hr.sep {
+      border: none;
+      border-top: 1px dashed #ccc;
+      margin: 20px 0;
+    }
+
+    .alpha-symbol {
+      font-style: italic;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 8px; }
+      .page { padding: 25px 20px 30px 40px; }
+      .page::before { left: 28px; }
+      .hw { font-size: 19px; line-height: 30px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PAGE 1: Problem 49 -->
+<div class="page">
+  <div class="header">
+    <div class="header-line">
+      <span>9C: One Prop Z Test (Two Sides)</span>
+      <span>Name __________________________ Period _____</span>
+    </div>
+  </div>
+
+  <div class="problem">
+    <p class="problem-text">
+      <strong>49. Mendel and the peas:</strong> Gregor Mendel is an Austrian Monk who is considered the father of genetics. He studied the inheritance of various traits in pea plants. One such trait is whether the pea is smooth or wrinkled. Mendel predicted a ratio of 3 smooth peas for every 1 wrinkled pea. In one study, he randomly sampled some peas and found 423 smooth and 133 wrinkled peas. Do these data provide convincing evidence that his prediction is correct? (If I don't tell you the significance level, assume <em>&alpha; = 5%</em>)
+    </p>
+  </div>
+
+  <div class="solution hw">
+
+    <!-- STEP 1: STATE -->
+    <div class="step">
+      <span class="step-num">1</span>
+      <div class="step-content">
+        <span class="step-label">State:</span>
+        <div class="hypothesis-block">
+          <span class="line">P = true proportion of peas that are wrinkled</span>
+          <span class="line" style="margin-top:4px;">
+            H<sub>0</sub>: p = 0.25 &nbsp;(25%)
+          </span>
+          <span class="line">
+            H<sub>a</sub>: p &ne; 0.25
+          </span>
+          <span class="line">
+            <span class="alpha-symbol">&alpha;</span> = 5% = 0.05
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: PLAN -->
+    <div class="step">
+      <span class="step-num">2</span>
+      <div class="step-content">
+        <span class="step-label">Plan: </span>
+        <span>If conditions are met, we will do a 1-Proportion Z-Test.</span>
+        <div class="conditions">
+
+          <div class="condition-item">
+            <span class="condition-label">Random?:</span>
+            <span>Sampling is done. <span class="check">&check;</span></span>
+          </div>
+
+          <div class="condition-item">
+            <span class="condition-label">Independence?:</span>
+            <span>556 peas is most likely less than 10% of all peas that he would check at the time. <span class="check">&check;</span></span>
+          </div>
+
+          <div class="condition-item">
+            <span class="condition-label">Large Counts?:</span>
+            <span>(556)(0.25) = 139 &ge; 10 &nbsp;and&nbsp; (556)(0.75) = 417 &ge; 10 <span class="check">&check;</span></span>
+          </div>
+          <div style="margin-top:2px;">Can use Normal approximation.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: DO -->
+    <div class="step">
+      <span class="step-num">3</span>
+      <div class="step-content">
+        <span class="step-label">Do:</span>
+        <div class="calc-block">
+          <span class="line">
+            p&#770; =
+            <span class="fraction"><span class="num">133</span><span class="den">556</span></span>
+            = 0.2392 &asymp; 23.92%
+          </span>
+          <span class="line" style="margin-top:4px;">
+            &sigma;<sub>p&#770;</sub> =
+            <span class="sqrt"><span class="radicand">
+              <span class="fraction"><span class="num">(0.25)(0.75)</span><span class="den">556</span></span>
+            </span></span>
+            = 0.0184
+          </span>
+
+          <span class="line" style="margin-top:6px;">
+            z =
+            <span class="fraction"><span class="num">p&#770; &minus; p<sub>0</sub></span><span class="den">&sigma;<sub>p&#770;</sub></span></span>
+            =
+            <span class="fraction"><span class="num">0.2392 &minus; 0.25</span><span class="den">0.0184</span></span>
+            = &minus;0.587
+          </span>
+
+          <div class="normal-curve">
+            <svg viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg">
+              <!-- Normal curve -->
+              <path d="M 10,110 Q 30,108 50,100 Q 70,80 85,50 Q 100,20 110,10 Q 120,20 135,50 Q 150,80 170,100 Q 190,108 210,110" fill="none" stroke="#d42020" stroke-width="2.5"/>
+              <!-- Center line -->
+              <line x1="110" y1="10" x2="110" y2="115" stroke="#d42020" stroke-width="1" stroke-dasharray="4,3"/>
+              <!-- Left z mark -->
+              <line x1="85" y1="50" x2="85" y2="115" stroke="#d42020" stroke-width="1.2"/>
+              <!-- Right z mark -->
+              <line x1="135" y1="50" x2="135" y2="115" stroke="#d42020" stroke-width="1.2"/>
+              <!-- Shaded tails -->
+              <path d="M 10,110 Q 30,108 50,100 Q 70,80 85,50 L 85,115 L 10,115 Z" fill="#d42020" fill-opacity="0.15"/>
+              <path d="M 135,50 Q 150,80 170,100 Q 190,108 210,110 L 210,115 L 135,115 Z" fill="#d42020" fill-opacity="0.15"/>
+              <!-- Labels -->
+              <text x="110" y="128" text-anchor="middle" font-family="Caveat" font-size="13" fill="#d42020">0</text>
+              <text x="85" y="128" text-anchor="middle" font-family="Caveat" font-size="13" fill="#d42020">-0.587</text>
+              <text x="140" y="128" text-anchor="middle" font-family="Caveat" font-size="13" fill="#d42020">0.587</text>
+              <!-- p-value labels -->
+              <text x="45" y="96" text-anchor="middle" font-family="Caveat" font-size="12" fill="#d42020">27.86%</text>
+              <text x="175" y="96" text-anchor="middle" font-family="Caveat" font-size="12" fill="#d42020">27.86%</text>
+            </svg>
+          </div>
+
+          <span class="line">
+            normalcdf(&minus;&infin;, &minus;0.587, 0, 1) = 0.2786
+          </span>
+          <span class="line">
+            P-value = 2 &times; 0.2786 = <strong>0.5572 &asymp; 55.72%</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: CONCLUDE -->
+    <div class="step">
+      <span class="step-num">4</span>
+      <div class="step-content">
+        <span class="step-label">Conclude:</span>
+        <div class="conclusion-block">
+          <span class="line">
+            Since our p-value of 55.72% is <strong>greater than</strong> our &alpha; of 5%, we <strong>fail to reject</strong> the null hypothesis given in <span style="border:2px solid var(--ink-red);border-radius:50%;padding:0 5px;">1</span>.
+          </span>
+          <span class="line" style="margin-top:6px;">
+            There is <strong>not</strong> sufficient evidence that the proportion of peas that are wrinkled is not 25%.
+          </span>
+          <span class="line" style="margin-top:4px;">
+            <span class="blue-note">(i.e., Mendel's prediction appears to be correct.)</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PAGE 2: Problem 50 -->
+<div class="page">
+
+  <div class="problem">
+    <p class="problem-text">
+      <strong>50. DMV Driving Test:</strong> A state's Division of Motor Vehicles claims that 60% of all teens pass their driving test on the first attempt. An investigative reporter examines an SRS of the DMV records for 125 teens; 86 of them passed the test on their first try. Is there convincing evidence that the DMV's claim is incorrect?
+    </p>
+  </div>
+
+  <div class="solution hw">
+
+    <!-- STEP 1: STATE -->
+    <div class="step">
+      <span class="step-num">1</span>
+      <div class="step-content">
+        <span class="step-label">State:</span>
+        <div class="hypothesis-block">
+          <span class="line">P = true proportion of teens who would pass their driving test on their first attempt</span>
+          <span class="line" style="margin-top:4px;">
+            H<sub>0</sub>: p = 0.60 &nbsp;(60%)
+          </span>
+          <span class="line">
+            H<sub>a</sub>: p &ne; 0.60
+          </span>
+          <span class="line">
+            <span class="alpha-symbol">&alpha;</span> = 5% = 0.05
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: PLAN -->
+    <div class="step">
+      <span class="step-num">2</span>
+      <div class="step-content">
+        <span class="step-label">Plan: </span>
+        <span>If conditions are met, we will do a 1-Proportion Z-Test.</span>
+        <div class="conditions">
+
+          <div class="condition-item">
+            <span class="condition-label">Random?:</span>
+            <span>SRS was done. <span class="check">&check;</span></span>
+          </div>
+
+          <div class="condition-item">
+            <span class="condition-label">Independence?:</span>
+            <span>125 is most likely less than 10% of all teens who take the driving test. <span class="check">&check;</span></span>
+          </div>
+
+          <div class="condition-item">
+            <span class="condition-label">Large Counts?:</span>
+            <span>(0.6)(125) = 75 &ge; 10 &nbsp;and&nbsp; (0.4)(125) = 50 &ge; 10 <span class="check">&check;</span></span>
+          </div>
+          <div style="margin-top:2px;">Can use Normal approximation.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: DO -->
+    <div class="step">
+      <span class="step-num">3</span>
+      <div class="step-content">
+        <span class="step-label">Do:</span>
+        <div class="calc-block">
+          <span class="line">
+            p&#770; =
+            <span class="fraction"><span class="num">86</span><span class="den">125</span></span>
+            = 0.688 = 68.8%
+          </span>
+          <span class="line" style="margin-top:4px;">
+            &sigma;<sub>p&#770;</sub> =
+            <span class="sqrt"><span class="radicand">
+              <span class="fraction"><span class="num">(0.6)(0.4)</span><span class="den">125</span></span>
+            </span></span>
+            = 0.0438 &asymp; 4.4%
+          </span>
+
+          <span class="line" style="margin-top:6px;">
+            z =
+            <span class="fraction"><span class="num">p&#770; &minus; p<sub>0</sub></span><span class="den">&sigma;<sub>p&#770;</sub></span></span>
+            =
+            <span class="fraction"><span class="num">0.688 &minus; 0.60</span><span class="den">0.0438</span></span>
+            &asymp; 2.01
+          </span>
+
+          <div class="normal-curve">
+            <svg viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg">
+              <!-- Normal curve -->
+              <path d="M 10,110 Q 30,108 50,100 Q 70,80 85,50 Q 100,20 110,10 Q 120,20 135,50 Q 150,80 170,100 Q 190,108 210,110" fill="none" stroke="#d42020" stroke-width="2.5"/>
+              <!-- Center line -->
+              <line x1="110" y1="10" x2="110" y2="115" stroke="#d42020" stroke-width="1" stroke-dasharray="4,3"/>
+              <!-- Left z mark (further out for z=2) -->
+              <line x1="55" y1="98" x2="55" y2="115" stroke="#d42020" stroke-width="1.2"/>
+              <!-- Right z mark -->
+              <line x1="165" y1="98" x2="165" y2="115" stroke="#d42020" stroke-width="1.2"/>
+              <!-- Shaded tails -->
+              <path d="M 10,110 Q 30,108 50,100 L 55,98 L 55,115 L 10,115 Z" fill="#d42020" fill-opacity="0.2"/>
+              <path d="M 165,98 Q 170,100 190,108 Q 200,110 210,110 L 210,115 L 165,115 Z" fill="#d42020" fill-opacity="0.2"/>
+              <!-- Labels -->
+              <text x="110" y="128" text-anchor="middle" font-family="Caveat" font-size="13" fill="#d42020">0</text>
+              <text x="50" y="128" text-anchor="middle" font-family="Caveat" font-size="13" fill="#d42020">-2.01</text>
+              <text x="170" y="128" text-anchor="middle" font-family="Caveat" font-size="13" fill="#d42020">2.01</text>
+              <!-- p-value labels -->
+              <text x="32" y="92" text-anchor="middle" font-family="Caveat" font-size="12" fill="#d42020">2.27%</text>
+              <text x="190" y="92" text-anchor="middle" font-family="Caveat" font-size="12" fill="#d42020">2.27%</text>
+            </svg>
+          </div>
+
+          <span class="line">
+            normalcdf(2.01, &infin;, 0, 1) = 0.0227
+          </span>
+          <span class="line">
+            P-value = 2 &times; 0.0227 = <strong>0.0454 &asymp; 4.54%</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: CONCLUDE -->
+    <div class="step">
+      <span class="step-num">4</span>
+      <div class="step-content">
+        <span class="step-label">Conclude:</span>
+        <div class="conclusion-block">
+          <span class="line">
+            Since our p-value of 4.54% is <strong>less than</strong> our &alpha; of 5%, we <strong>reject</strong> the null hypothesis given in <span style="border:2px solid var(--ink-red);border-radius:50%;padding:0 5px;">1</span>.
+          </span>
+          <span class="line" style="margin-top:6px;">
+            There <strong>is</strong> convincing evidence that the true proportion of teens who would pass their driving test on their first attempt is not 60%.
+          </span>
+          <span class="line" style="margin-top:4px;">
+            <span class="blue-note">(i.e., The DMV's claim appears to be incorrect.)</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
